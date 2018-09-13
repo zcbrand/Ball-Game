@@ -40,26 +40,19 @@ obstacleTimer.addEventListener(TimerEvent.TIMER, onTimer);
 /****************************************
 * Main Funtion                          *
 ****************************************/
-function PlayGame(Event)
-{	
-	if (gameState == false)
-	{
-		showTitle();
-	}
+function PlayGame(Event){	
+    if (gameState == false){
+        showTitle();
+    }
 	
-	if (stopObstacle == false)
-	{
+    if (stopObstacle == false){
 		playerGravity(); //Applies gravity to player character
-		
 		moveAllObstacles(); //Moves Obstacles across stage
-		
 		removeObstacle();
-		
 		obstacleHitTest();
 	}
 	
-	if (showScore == true)
-	{
+	if (showScore == true){
 		dispScore();
 	}
 }
@@ -68,27 +61,24 @@ function PlayGame(Event)
 /***************************************
 * Jump Funtions                        *
 ***************************************/
-function doJump(event: MouseEvent)
-{
-	
-	if(!gameStart)
-		startGame();
-		
-	if(gameStart)
+function doJump(event: MouseEvent){
+    if(!gameStart){
+	startGame();
+    }
+
+    if(gameStart){
         jumpPower = jumpPowerBurst;
+    }
 	
-	gameState = true;
-	
+    gameState = true;
 }
 
-function playerGravity()
-{
-	if(isJumping)  
-    {  
+function playerGravity(){
+    if(isJumping){  
         player.y -= jumpPower;  
         jumpPower -= 2;
     }
-	if(player.y + gravity < ground && gameStart)  
+    if(player.y + gravity < ground && gameStart){  
         player.y += gravity;
 }
 
@@ -96,15 +86,11 @@ function playerGravity()
 * Functions to spawn an obstacle every *
 *    1 second                          *
 ***************************************/
-function onTimer(event: TimerEvent)
-{
-	
+function onTimer(event: TimerEvent){
 	spawnObstacles(); //Spawns Obstacle
-	
 }
 
-function spawnObstacles()
-{
+function spawnObstacles(){
 	var randNum:Number = 0; //Initiate random number variable
 	var maxNum:Number = 400 - (player.height * 3);
 	var minNum:Number = 0 + (player.height * 4.5);
@@ -142,40 +128,32 @@ function spawnObstacles()
 	allScoreCheckBlocks.push(ScoreCheckBlock);
 }
 
-function moveAllObstacles()
-{
+function moveAllObstacles(){
 	//For every pipe in allPipes aray
-	for each (var PipeObstacle:* in allPipes)
-	{
+	for each (var PipeObstacle:* in allPipes){
 		//Move across stage from right to left
 		PipeObstacle.x -= obstacleSpeed;
 	}
 	
 	//For every ScoreCheckBox in allScoreCheckBlocks aray
-	for each (var ScoreCheckBlock:* in allScoreCheckBlocks)
-	{
+	for each (var ScoreCheckBlock:* in allScoreCheckBlocks){
 		//Move across stage from right to left
 		ScoreCheckBlock.x -= obstacleSpeed;
 	}
 }
 
-function removeObstacle()
-{
-	for each (var PipeObstacle:* in allPipes)
-	{
-		if (PipeObstacle.x < -100)
-		{
-			if (contains(PipeObstacle))
+function removeObstacle(){
+	for each (var PipeObstacle:* in allPipes){
+		if (PipeObstacle.x < -100){
+			if (contains(PipeObstacle)){
 				removeChild(PipeObstacle);
+            }
 		}
 	}
 	
-	for each (var ScoreCheckBlock:* in allScoreCheckBlocks)
-	{
-		if (ScoreCheckBlock.x < player.x)
-		{
-			if (contains(ScoreCheckBlock))
-			{
+	for each (var ScoreCheckBlock:* in allScoreCheckBlocks){
+		if (ScoreCheckBlock.x < player.x){
+			if (contains(ScoreCheckBlock)){
 				removeChild(ScoreCheckBlock);
 				score += 1;
 				trace(score);
@@ -187,8 +165,7 @@ function removeObstacle()
 /***************************************
 * Function to start the game           *
 ***************************************/
-function startGame()
-{
+function startGame(){
 	//Activate Ball
 	gameStart = true;
 	
@@ -200,33 +177,29 @@ function startGame()
 	isJumping = true;
 	
 	//Satrt Obstacle Timer
-	obstacleTimer.start();
-	
+	obstacleTimer.start();	
 }
 
 /***************************************
 * Function to test if ball hits        *
 * an obstacle                          *
 ***************************************/
-function obstacleHitTest()
-{
-	for each (var PipeObstacle:* in allPipes)
-	{
-		if (player.hitTestObject(PipeObstacle))
-		{
+function obstacleHitTest(){
+	for each (var PipeObstacle:* in allPipes){
+		if (player.hitTestObject(PipeObstacle)){
 			stopGame();
 		}
 	}
 	
-	if (player.y < 0 || player.y > ground)
+	if (player.y < 0 || player.y > ground){
 		stopGame();
+    }
 }
 
 /***************************************
 * Function to stop the game            *
 ***************************************/
-function stopGame()
-{
+function stopGame(){
 	stopObstacle = true;
 	showScore = true;
 }
@@ -234,8 +207,7 @@ function stopGame()
 /***************************************
 * Function to show score               *
 ***************************************/
-function dispScore()
-{	
+function dispScore(){	
 	//Initiate MovieClips
 	var displayScore: MovieClip = new DisplayScore();
 	
@@ -250,8 +222,7 @@ function dispScore()
 	addChild(displayScore);
 }
 
-function showTitle()
-{
+function showTitle(){
 	gameTitle.x = (550 - gameTitle.width) / 2;
 	gameTitle.y = (400 - gameTitle.height) / 3;
 	
