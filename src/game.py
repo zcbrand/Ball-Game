@@ -8,7 +8,7 @@ including initialization, event handling, updates, and rendering.
 import pygame
 import sys
 from src.config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, WINDOW_TITLE
-from src.states import StateManager, TitleState
+from src.states import StateManager, TitleState, PlayState
 
 
 class Game:
@@ -44,9 +44,11 @@ class Game:
         """Set up all game states."""
         # Create states
         title_state = TitleState(self.state_manager)
+        play_state = PlayState(self.state_manager)
 
         # Add states to manager
         self.state_manager.add_state('title', title_state)
+        self.state_manager.add_state('play', play_state)
 
         # Set initial state
         self.state_manager.change_state('title')

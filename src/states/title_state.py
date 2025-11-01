@@ -2,10 +2,10 @@
 Title screen state.
 
 Displays the game title and a "Click to Play" message.
-For Phase 1, this is a simple placeholder to test the state system.
 """
 
 import pygame
+from typing import Optional
 from src.states.state_base import State
 from src.config import (
     SCREEN_WIDTH, SCREEN_HEIGHT,
@@ -49,9 +49,8 @@ class TitleState(State):
         """
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                # TODO: Change to 'playing' state in Phase 2
-                # For Phase 1, just acknowledge the click
-                print("Click detected - game would start (Phase 2)")
+                # Transition to play state
+                self.change_state('play')
 
     def update(self, dt: float) -> None:
         """
