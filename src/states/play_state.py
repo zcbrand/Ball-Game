@@ -8,7 +8,7 @@ avoiding obstacles and scoring points.
 import pygame
 from src.states.state_base import State
 from src.entities import Player
-from src.systems import PhysicsSystem
+from src.systems import PhysicsSystem, ObstacleManager
 from src.config import (
     SCREEN_WIDTH, SCREEN_HEIGHT,
     COLOR_SKY, COLOR_GROUND, COLOR_WHITE, COLOR_BLACK,
@@ -36,6 +36,7 @@ class PlayState(State):
         # Will be initialized in on_enter
         self.player: Player = None
         self.physics: PhysicsSystem = None
+        self.obstacle_manager: ObstacleManager = None
         self.ground_y: float = 0
         self.score: int = 0
         self.font: pygame.font.Font = None
@@ -51,6 +52,9 @@ class PlayState(State):
 
         # Create physics system
         self.physics = PhysicsSystem(self.ground_y)
+
+        # Create obstacle manager
+        self.obstacle_manager = ObstacleManager()
 
         # Initialize score
         self.score = 0
@@ -86,9 +90,14 @@ class PlayState(State):
         # Update player with physics
         self.physics.update(self.player, dt)
 
-        # TODO Phase 3: Update obstacles
-        # TODO Phase 4: Check collisions
-        # TODO Phase 4: Update score
+        # Update obstacles (spawning, movement, cleanup)
+        self.obstacle_manager.update(dt)
+
+        # Check if player passed through checkpoint (score)
+        score_gained = self.obstacle_manager.check_score(self.player.get_rect())
+        self.score += score_gained
+
+        # TODO Phase 4: Check collisions with obstacles
 
     def draw(self, surface: pygame.Surface) -> None:
         """
@@ -103,13 +112,14 @@ class PlayState(State):
         # Draw ground
         self._draw_ground(surface)
 
-        # Draw player
+        # Draw obstacles
+        self.obstacle_manager.draw(surface)
+
+        # Draw player (on top of obstacles for visibility)
         self.player.draw(surface)
 
-        # Draw score
+        # Draw score (on top of everything)
         self._draw_score(surface)
-
-        # TODO Phase 3: Draw obstacles
 
     def _draw_ground(self, surface: pygame.Surface) -> None:
         """
