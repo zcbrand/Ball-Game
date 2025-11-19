@@ -8,7 +8,7 @@ avoiding obstacles and scoring points.
 import pygame
 from src.states.state_base import State
 from src.entities import Player
-from src.systems import PhysicsSystem, ObstacleManager
+from src.systems import PhysicsSystem, ObstacleManager, CollisionSystem
 from src.config import (
     SCREEN_WIDTH, SCREEN_HEIGHT,
     COLOR_SKY, COLOR_GROUND, COLOR_WHITE, COLOR_BLACK,
@@ -37,6 +37,7 @@ class PlayState(State):
         self.player: Player = None
         self.physics: PhysicsSystem = None
         self.obstacle_manager: ObstacleManager = None
+        self.collision: CollisionSystem = None
         self.ground_y: float = 0
         self.score: int = 0
         self.font: pygame.font.Font = None
@@ -55,6 +56,9 @@ class PlayState(State):
 
         # Create obstacle manager
         self.obstacle_manager = ObstacleManager()
+
+        # Create collision system
+        self.collision = CollisionSystem(ceiling_y=0, ground_y=self.ground_y + 20)
 
         # Initialize score
         self.score = 0
@@ -97,7 +101,20 @@ class PlayState(State):
         score_gained = self.obstacle_manager.check_score(self.player.get_rect())
         self.score += score_gained
 
-        # TODO Phase 4: Check collisions with obstacles
+        # Check for collisions (obstacles and boundaries)
+        obstacles = self.obstacle_manager.get_obstacles()
+        if self.collision.check_all_collisions(self.player, obstacles):
+            self._game_over()
+
+    def _game_over(self) -> None:
+        """Handle game over - transition to game over state."""
+        # Get game over state and set the final score
+        gameover_state = self.state_manager.states.get('gameover')
+        if gameover_state:
+            gameover_state.set_score(self.score)
+
+        # Transition to game over state
+        self.change_state('gameover')
 
     def draw(self, surface: pygame.Surface) -> None:
         """
